@@ -12,13 +12,25 @@ app = Client(
 
 with app:
     forwarded_count = 0
+    prev_media_group_id = ""
     for message in app.iter_history(oldChat, reverse = True):
         if message.service == True:
-            continue   
+            continue
+        
+        media_group_id = message.media_group_id
+        if media_group_id == prev_media_group_id:
+            continue
+            
+        prev_media_group_id = message.media_group_id
+        message_ids = [message.message_id]
+        
+        if media_group_id:
+            message_group = app.get_media_group(oldChat, message.message_id)
+            message_ids = [message.message_id for message in message_group]
+        
         app.forward_messages(
             chat_id=newChat,
-            from_chat_id=message.chat.id,
-            message_ids=message.message_id)
-        forwarded_count += 1
-        print(f"[+] forward message {message.message_id} ({forwarded_count} forwarded)", end="\r")
-    print(f"\n\n[+] Done! ")
+            from_chat_id=oldChat,
+            message_ids= message_ids)
+        forwarded_count += len(messsage_ids)
+        print(f"[+] forward message {message.message_id} ({forwarded_count} forwarded)")
