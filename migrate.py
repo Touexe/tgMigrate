@@ -24,7 +24,7 @@ with app:
         prev_media_group_id = message.media_group_id
         message_ids = [message.message_id]
         
-        if media_group_id:
+        if media_group_id: #if it's not None
             message_group = app.get_media_group(oldChat, message.message_id)
             message_ids = [message.message_id for message in message_group]
         
